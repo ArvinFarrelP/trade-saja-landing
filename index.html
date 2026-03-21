@@ -1012,21 +1012,49 @@
   <section id="topics">
     <div class="section-label">Topik Utama <span>// 02</span></div>
     <div class="topics-grid">
-      {[
-        { icon: '🔐', name: 'Privacy Coins', desc: 'Ring signatures, stealth addresses, ZK-proofs, dan arsitektur anonimitas keuangan digital.', count: '3 artikel' },
-        { icon: '⚡', name: 'DeFi', desc: 'AMM, lending protocols, yield farming, dan mekanika pertukaran terdesentralisasi.', count: '4 artikel' },
-        { icon: '₿', name: 'Bitcoin', desc: 'Lightning Network, halving cycles, on-chain analytics, dan desain ekonomi Bitcoin.', count: '2 artikel' },
-        { icon: 'Ξ', name: 'Ethereum', desc: 'Layer 2 rollups, EIP-4844, Ethereum scalability roadmap, dan ekosistem dApps.', count: '2 artikel' },
-        { icon: '🌐', name: 'Web3', desc: 'DAOs, governance tokenomics, NFT utility, dan masa depan infrastruktur internet.', count: '2 artikel' },
-        { icon: '🔗', name: 'Blockchain', desc: 'Consensus mechanisms, cross-chain bridges, dan arsitektur protokol blockchain.', count: '3 artikel' },
-      ].map(t => `
-        <div class="topic-card reveal">
-          <span class="topic-count">${t.count}</span>
-          <span class="topic-icon">${t.icon}</span>
-          <div class="topic-name">${t.name}</div>
-          <div class="topic-desc">${t.desc}</div>
-        </div>
-      `).join('')}
+
+      <div class="topic-card reveal">
+        <span class="topic-count">3 artikel</span>
+        <span class="topic-icon">🔐</span>
+        <div class="topic-name">Privacy Coins</div>
+        <div class="topic-desc">Ring signatures, stealth addresses, ZK-proofs, dan arsitektur anonimitas keuangan digital.</div>
+      </div>
+
+      <div class="topic-card reveal">
+        <span class="topic-count">4 artikel</span>
+        <span class="topic-icon">⚡</span>
+        <div class="topic-name">DeFi</div>
+        <div class="topic-desc">AMM, lending protocols, yield farming, dan mekanika pertukaran terdesentralisasi.</div>
+      </div>
+
+      <div class="topic-card reveal">
+        <span class="topic-count">2 artikel</span>
+        <span class="topic-icon">₿</span>
+        <div class="topic-name">Bitcoin</div>
+        <div class="topic-desc">Lightning Network, halving cycles, on-chain analytics, dan desain ekonomi Bitcoin.</div>
+      </div>
+
+      <div class="topic-card reveal">
+        <span class="topic-count">2 artikel</span>
+        <span class="topic-icon">Ξ</span>
+        <div class="topic-name">Ethereum</div>
+        <div class="topic-desc">Layer 2 rollups, EIP-4844, Ethereum scalability roadmap, dan ekosistem dApps.</div>
+      </div>
+
+      <div class="topic-card reveal">
+        <span class="topic-count">2 artikel</span>
+        <span class="topic-icon">🌐</span>
+        <div class="topic-name">Web3</div>
+        <div class="topic-desc">DAOs, governance tokenomics, NFT utility, dan masa depan infrastruktur internet.</div>
+      </div>
+
+      <div class="topic-card reveal">
+        <span class="topic-count">3 artikel</span>
+        <span class="topic-icon">🔗</span>
+        <div class="topic-name">Blockchain</div>
+        <div class="topic-desc">Consensus mechanisms, cross-chain bridges, dan arsitektur protokol blockchain.</div>
+      </div>
+
     </div>
   </section>
 

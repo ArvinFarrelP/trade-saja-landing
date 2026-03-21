@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trade Saja — Crypto Education & Blockchain Research</title>
+  <meta name="description" content="Platform edukasi kripto dan riset blockchain terdepan. Pelajari DeFi, Web3, dan privacy coins bersama Arvin Farrel Pramuditya." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:   #07080a;
+      --dark:    #0c0d11;
+      --card:    #111318;
+      --border:  #1a1d26;
+      --border2: #232737;
+      --white:   #e8edf5;
+      --dim:     #7a8299;
+      --muted:   #3d4259;
+      --blue:    #3b82f6;
+      --blue2:   #1d4ed8;
+      --cyan:    #06b6d4;
+      --green:   #22c55e;
+      --amber:   #f59e0b;
+      --mono:    'IBM Plex Mono', monospace;
+      --sans:    'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── CANVAS BG ── */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      opacity: 0.55;
+    }
+
+    /* ── SCANLINE overlay ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.07) 2px,
+        rgba(0,0,0,0.07) 4px
+      );
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ── TICKER ── */
+    .ticker-wrap {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 32px;
+      background: var(--dark);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+    }
+
+    .ticker-track {
+      display: flex;
+      gap: 0;
+      animation: ticker 28s linear infinite;
+      white-space: nowrap;
+    }
+
+    .ticker-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 28px;
+      font-family: var(--mono);
+      font-size: 0.6875rem;
+      color: var(--dim);
+      border-right: 1px solid var(--border);
+    }
+
+    .ticker-item .sym { color: var(--white); font-weight: 600; }
+    .ticker-item .up  { color: var(--green); }
+    .ticker-item .dn  { color: #ef4444; }
+
+    @keyframes ticker {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed;
+      top: 32px;
+      left: 0; right: 0;
+      z-index: 99;
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7,8,10,0.75);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s;
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--white);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--blue);
+      box-shadow: 0 0 10px var(--blue), 0 0 20px rgba(59,130,246,0.4);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { transform: scale(1); opacity: 1; }
+      50%      { transform: scale(0.7); opacity: 0.5; }
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--blue); }
+
+    .nav-cta {
+      font-family: var(--mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--blue) !important;
+      border: 1px solid var(--blue);
+      padding: 6px 16px;
+      border-radius: 4px;
+      transition: background 0.2s, box-shadow 0.2s !important;
+    }
+
+    .nav-cta:hover {
+      background: rgba(59,130,246,0.12) !important;
+      box-shadow: 0 0 16px rgba(59,130,246,0.3);
+    }
+
+    /* ── WRAPPER ── */
+    .page { position: relative; z-index: 2; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      padding: 140px 32px 80px;
+      max-width: 1160px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--blue);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.2s forwards;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 1px;
+      background: var(--blue);
+      box-shadow: 0 0 6px var(--blue);
+    }
+
+    .hero-title {
+      font-family: var(--mono);
+      font-size: clamp(3rem, 8vw, 7.5rem);
+      font-weight: 700;
+      line-height: 0.92;
+      letter-spacing: -0.04em;
+      color: var(--white);
+      margin-bottom: 8px;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.35s forwards;
+    }
+
+    .hero-title .accent {
+      color: transparent;
+      -webkit-text-stroke: 1px var(--blue);
+      position: relative;
+    }
+
+    /* Glitch effect on accent text */
+    .hero-title .accent::before,
+    .hero-title .accent::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0; left: 0;
+      color: transparent;
+      -webkit-text-stroke: 1px var(--blue);
+    }
+    .hero-title .accent::before {
+      animation: glitch1 4s infinite;
+      clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%);
+      transform: translateX(-2px);
+      opacity: 0.7;
+    }
+    .hero-title .accent::after {
+      animation: glitch2 4s infinite;
+      clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
+      transform: translateX(2px);
+      color: var(--cyan);
+      -webkit-text-stroke: 1px var(--cyan);
+      opacity: 0.5;
+    }
+
+    @keyframes glitch1 {
+      0%,92%,100% { transform: translateX(0); opacity: 0; }
+      93%  { transform: translateX(-3px); opacity: 0.7; }
+      95%  { transform: translateX(2px); opacity: 0.5; }
+      97%  { transform: translateX(-1px); opacity: 0.7; }
+    }
+    @keyframes glitch2 {
+      0%,92%,100% { transform: translateX(0); opacity: 0; }
+      93%  { transform: translateX(3px); opacity: 0.5; }
+      95%  { transform: translateX(-2px); opacity: 0.4; }
+      97%  { transform: translateX(1px); opacity: 0.5; }
+    }
+
+    .hero-sub {
+      font-family: var(--mono);
+      font-size: clamp(0.875rem, 2vw, 1.125rem);
+      color: var(--dim);
+      margin-top: 28px;
+      margin-bottom: 48px;
+      max-width: 520px;
+      line-height: 1.6;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.5s forwards;
+    }
+
+    .hero-sub span { color: var(--white); }
+
+    /* ── CTA GROUP ── */
+    .cta-group {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.65s forwards;
+    }
+
+    .btn-main {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      background: var(--blue);
+      color: #fff;
+      font-family: var(--mono);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      overflow: hidden;
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+
+    .btn-main::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .btn-main:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(59,130,246,0.5), 0 8px 20px rgba(0,0,0,0.4);
+    }
+    .btn-main:hover::before { opacity: 1; }
+
+    /* Arrow on btn */
+    .btn-main .arrow {
+      transition: transform 0.2s;
+    }
+    .btn-main:hover .arrow { transform: translateX(4px); }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      background: transparent;
+      color: var(--white);
+      font-family: var(--mono);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      border-radius: 6px;
+      border: 1px solid var(--border2);
+      transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--blue);
+      background: rgba(59,130,246,0.07);
+      transform: translateY(-2px);
+    }
+
+    /* ── STATS ROW ── */
+    .stats-row {
+      display: flex;
+      gap: 0;
+      margin-top: 72px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.8s forwards;
+    }
+
+    .stat {
+      padding: 0 40px 0 0;
+      margin-right: 40px;
+      border-right: 1px solid var(--border);
+    }
+    .stat:last-child { border-right: none; margin-right: 0; }
+
+    .stat-n {
+      font-family: var(--mono);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-n em {
+      font-style: normal;
+      color: var(--blue);
+    }
+
+    .stat-l {
+      font-family: var(--mono);
+      font-size: 0.625rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+
+    /* ── SECTION GENERIC ── */
+    section {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 100px 32px;
+    }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--blue);
+      margin-bottom: 48px;
+    }
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: var(--blue);
+    }
+    .section-label span {
+      color: var(--muted);
+      margin-left: 4px;
+    }
+
+    /* ── WHAT IS ── */
+    .what-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .what-heading {
+      font-family: var(--mono);
+      font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      color: var(--white);
+      margin-bottom: 24px;
+    }
+
+    .what-heading em {
+      font-style: normal;
+      color: var(--blue);
+    }
+
+    .what-body {
+      font-size: 0.9375rem;
+      color: var(--dim);
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+
+    .feature-list {
+      list-style: none;
+      margin-top: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 0.9rem;
+      color: var(--dim);
+    }
+
+    .feature-list li::before {
+      content: '//';
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--blue);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .feature-list strong { color: var(--white); }
+
+    /* Right side — terminal block */
+    .terminal {
+      background: var(--card);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .terminal-bar {
+      background: var(--dark);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .t-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+
+    .terminal-body {
+      padding: 24px 28px;
+      font-family: var(--mono);
+      font-size: 0.8125rem;
+      line-height: 2;
+    }
+
+    .t-comment { color: var(--muted); }
+    .t-key     { color: var(--cyan); }
+    .t-str     { color: var(--green); }
+    .t-num     { color: var(--amber); }
+    .t-bool    { color: #f472b6; }
+    .t-cursor  {
+      display: inline-block;
+      width: 8px; height: 14px;
+      background: var(--blue);
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* ── TOPICS GRID ── */
+    .topics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .topic-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s, transform 0.2s;
+      cursor: default;
+    }
+
+    .topic-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--blue), transparent);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .topic-card:hover {
+      border-color: var(--border2);
+      transform: translateY(-3px);
+    }
+    .topic-card:hover::before { opacity: 1; }
+
+    .topic-icon {
+      font-size: 1.75rem;
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .topic-name {
+      font-family: var(--mono);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .topic-desc {
+      font-size: 0.8125rem;
+      color: var(--dim);
+      line-height: 1.65;
+    }
+
+    .topic-count {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-family: var(--mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── ARTICLES PREVIEW ── */
+    .articles-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .article-row {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 22px 28px;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      transition: background 0.15s;
+      position: relative;
+    }
+
+    .article-row:last-child { border-bottom: none; }
+    .article-row:hover { background: rgba(59,130,246,0.04); }
+
+    .article-row:hover .article-arrow { opacity: 1; transform: translateX(0); }
+
+    .article-num {
+      font-family: var(--mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--muted);
+      width: 24px;
+      flex-shrink: 0;
+    }
+
+    .article-cat {
+      font-family: var(--mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--blue);
+      background: rgba(59,130,246,0.08);
+      border: 1px solid rgba(59,130,246,0.2);
+      border-radius: 3px;
+      padding: 2px 8px;
+      flex-shrink: 0;
+    }
+
+    .article-title {
+      font-family: var(--mono);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--white);
+      flex: 1;
+      letter-spacing: -0.01em;
+    }
+
+    .article-meta {
+      font-family: var(--mono);
+      font-size: 0.6875rem;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    .article-arrow {
+      font-size: 1rem;
+      color: var(--blue);
+      opacity: 0;
+      transform: translateX(-6px);
+      transition: opacity 0.2s, transform 0.2s;
+      flex-shrink: 0;
+    }
+
+    /* ── BIG CTA ── */
+    .cta-section {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 32px 120px;
+    }
+
+    .cta-box {
+      position: relative;
+      background: var(--card);
+      border: 1px solid var(--border2);
+      border-radius: 16px;
+      padding: 72px 64px;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .cta-box::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 400px;
+      background: radial-gradient(ellipse, rgba(59,130,246,0.1) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    /* Corner decorations */
+    .cta-box .corner {
+      position: absolute;
+      width: 20px; height: 20px;
+      border-color: var(--blue);
+      border-style: solid;
+      opacity: 0.4;
+    }
+    .cta-box .corner-tl { top: 16px; left: 16px; border-width: 1px 0 0 1px; }
+    .cta-box .corner-tr { top: 16px; right: 16px; border-width: 1px 1px 0 0; }
+    .cta-box .corner-bl { bottom: 16px; left: 16px; border-width: 0 0 1px 1px; }
+    .cta-box .corner-br { bottom: 16px; right: 16px; border-width: 0 1px 1px 0; }
+
+    .cta-label {
+      font-family: var(--mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--blue);
+      margin-bottom: 20px;
+    }
+
+    .cta-heading {
+      font-family: var(--mono);
+      font-size: clamp(1.75rem, 4vw, 3.25rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      color: var(--white);
+      margin-bottom: 20px;
+    }
+
+    .cta-sub {
+      font-size: 0.9375rem;
+      color: var(--dim);
+      max-width: 480px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+
+    .url-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(59,130,246,0.06);
+      border: 1px solid rgba(59,130,246,0.2);
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--blue);
+      margin-top: 20px;
+      word-break: break-all;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px;
+      max-width: 1160px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    footer .logo {
+      font-family: var(--mono);
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .footer-copy {
+      font-family: var(--mono);
+      font-size: 0.6875rem;
+      color: var(--muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-links a {
+      font-family: var(--mono);
+      font-size: 0.6875rem;
+      color: var(--muted);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--blue); }
+
+    /* ── DIVIDER ── */
+    .section-divider {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 32px;
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .what-grid    { grid-template-columns: 1fr; gap: 48px; }
+      .topics-grid  { grid-template-columns: repeat(2, 1fr); }
+      nav           { padding: 0 20px; }
+      .hero         { padding: 130px 20px 60px; }
+      section       { padding: 72px 20px; }
+      .cta-box      { padding: 48px 28px; }
+      .cta-section  { padding: 0 20px 80px; }
+      footer        { padding: 28px 20px; }
+      .section-divider { padding: 0 20px; }
+      .article-row  { flex-wrap: wrap; gap: 12px; padding: 18px 20px; }
+      .article-meta { display: none; }
+    }
+
+    @media (max-width: 600px) {
+      .topics-grid  { grid-template-columns: 1fr; }
+      .stats-row    { gap: 28px; }
+      .stat         { border-right: none; padding-right: 0; margin-right: 0; }
+      .nav-links    { display: none; }
+      .ticker-item  { padding: 0 16px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ── ANIMATED GRID BG ── -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- ── TICKER ── -->
+<div class="ticker-wrap" aria-hidden="true">
+  <div class="ticker-track" id="ticker">
+    <span class="ticker-item"><span class="sym">BTC</span> $98,420 <span class="up">▲ +2.4%</span></span>
+    <span class="ticker-item"><span class="sym">ETH</span> $3,812 <span class="up">▲ +1.8%</span></span>
+    <span class="ticker-item"><span class="sym">XMR</span> $168.40 <span class="up">▲ +3.1%</span></span>
+    <span class="ticker-item"><span class="sym">SOL</span> $192.80 <span class="dn">▼ -0.6%</span></span>
+    <span class="ticker-item"><span class="sym">BNB</span> $612.50 <span class="up">▲ +1.1%</span></span>
+    <span class="ticker-item"><span class="sym">ARB</span> $1.24 <span class="dn">▼ -1.3%</span></span>
+    <span class="ticker-item"><span class="sym">MATIC</span> $0.98 <span class="up">▲ +0.9%</span></span>
+    <span class="ticker-item"><span class="sym">LINK</span> $18.72 <span class="up">▲ +2.7%</span></span>
+    <!-- duplicate for seamless loop -->
+    <span class="ticker-item"><span class="sym">BTC</span> $98,420 <span class="up">▲ +2.4%</span></span>
+    <span class="ticker-item"><span class="sym">ETH</span> $3,812 <span class="up">▲ +1.8%</span></span>
+    <span class="ticker-item"><span class="sym">XMR</span> $168.40 <span class="up">▲ +3.1%</span></span>
+    <span class="ticker-item"><span class="sym">SOL</span> $192.80 <span class="dn">▼ -0.6%</span></span>
+    <span class="ticker-item"><span class="sym">BNB</span> $612.50 <span class="up">▲ +1.1%</span></span>
+    <span class="ticker-item"><span class="sym">ARB</span> $1.24 <span class="dn">▼ -1.3%</span></span>
+    <span class="ticker-item"><span class="sym">MATIC</span> $0.98 <span class="up">▲ +0.9%</span></span>
+    <span class="ticker-item"><span class="sym">LINK</span> $18.72 <span class="up">▲ +2.7%</span></span>
+  </div>
+</div>
+
+<!-- ── NAVBAR ── -->
+<nav role="banner">
+  <a href="https://trade-saja-38k804de2-arvinfarrelps-projects.vercel.app/" class="nav-logo">
+    <span class="nav-dot"></span>
+    Trade Saja
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">Tentang</a></li>
+    <li><a href="#topics">Topik</a></li>
+    <li><a href="#articles">Artikel</a></li>
+    <li><a href="https://trade-saja-38k804de2-arvinfarrelps-projects.vercel.app/" class="nav-cta" target="_blank">Buka Blog →</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+
+  <!-- ── HERO ── -->
+  <div class="hero">
+    <span class="hero-eyebrow">Blockchain Research Platform</span>
+
+    <h1 class="hero-title">
+      Trade<br>
+      <span class="accent" data-text="Saja.">Saja.</span>
+    </h1>
+
+    <p class="hero-sub">
+      <span>Crypto Education, Blockchain Research,</span><br>
+      dan Web3 Insights oleh Arvin Farrel Pramuditya.
+    </p>
+
+    <div class="cta-group">
+      <a href="https://trade-saja-38k804de2-arvinfarrelps-projects.vercel.app/"
+         target="_blank" rel="noopener"
+         class="btn-main">
+        Masuk ke Blog
+        <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="#about" class="btn-ghost">Pelajari Lebih</a>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-n">12<em>+</em></div>
+        <div class="stat-l">Artikel Riset</div>
+      </div>
+      <div class="stat">
+        <div class="stat-n">5<em>+</em></div>
+        <div class="stat-l">Topik Kripto</div>
+      </div>
+      <div class="stat">
+        <div class="stat-n">100<em>%</em></div>
+        <div class="stat-l">Gratis</div>
+      </div>
+      <div class="stat">
+        <div class="stat-n">0<em>ads</em></div>
+        <div class="stat-l">Tanpa Iklan</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ── WHAT IS ── -->
+  <section id="about">
+    <div class="section-label">Tentang Platform <span>// 01</span></div>
+    <div class="what-grid">
+      <div>
+        <h2 class="what-heading reveal">
+          Riset Kripto<br>
+          yang <em>Jujur</em><br>
+          &amp; Mendalam.
+        </h2>
+        <p class="what-body reveal">
+          Trade Saja bukan portal harga atau tips trading. Platform ini didedikasikan untuk
+          edukasi mendalam tentang bagaimana teknologi blockchain benar-benar bekerja —
+          dari cryptography hingga economic incentives.
+        </p>
+        <p class="what-body reveal">
+          Ditulis oleh Arvin Farrel Pramuditya, setiap artikel dibangun di atas
+          riset teknikal yang solid, bukan hype pasar.
+        </p>
+        <ul class="feature-list reveal">
+          <li><strong>Tidak ada prediksi harga.</strong> Pasar tidak bisa diprediksi secara konsisten.</li>
+          <li><strong>First principles.</strong> Setiap klaim berakar pada cara kerja teknologinya.</li>
+          <li><strong>Nuansa bukan tribalisme.</strong> Setiap protokol punya trade-off.</li>
+          <li><strong>Depth yang accessible.</strong> Kompleks tapi tidak rumit.</li>
+        </ul>
+      </div>
+
+      <!-- Terminal mockup -->
+      <div class="terminal reveal">
+        <div class="terminal-bar">
+          <span class="t-dot" style="background:#ff5f57"></span>
+          <span class="t-dot" style="background:#febc2e"></span>
+          <span class="t-dot" style="background:#28c840"></span>
+          <span style="font-family:var(--mono);font-size:0.6875rem;color:var(--muted);margin-left:8px;">trade-saja ~ research</span>
+        </div>
+        <div class="terminal-body">
+          <div class="t-comment">// platform.config.json</div>
+          <div>{</div>
+          <div>&nbsp; <span class="t-key">"name"</span>: <span class="t-str">"Trade Saja"</span>,</div>
+          <div>&nbsp; <span class="t-key">"author"</span>: <span class="t-str">"Arvin Farrel Pramuditya"</span>,</div>
+          <div>&nbsp; <span class="t-key">"focus"</span>: [</div>
+          <div>&nbsp;&nbsp;&nbsp; <span class="t-str">"Privacy Coins"</span>,</div>
+          <div>&nbsp;&nbsp;&nbsp; <span class="t-str">"DeFi Protocols"</span>,</div>
+          <div>&nbsp;&nbsp;&nbsp; <span class="t-str">"Blockchain Architecture"</span>,</div>
+          <div>&nbsp;&nbsp;&nbsp; <span class="t-str">"Web3 Research"</span></div>
+          <div>&nbsp; ],</div>
+          <div>&nbsp; <span class="t-key">"ads"</span>: <span class="t-bool">false</span>,</div>
+          <div>&nbsp; <span class="t-key">"sponsored"</span>: <span class="t-bool">false</span>,</div>
+          <div>&nbsp; <span class="t-key">"articles"</span>: <span class="t-num">12</span>,</div>
+          <div>&nbsp; <span class="t-key">"free"</span>: <span class="t-bool">true</span></div>
+          <div>} <span class="t-cursor"></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- ── TOPICS ── -->
+  <section id="topics">
+    <div class="section-label">Topik Utama <span>// 02</span></div>
+    <div class="topics-grid">
+      {[
+        { icon: '🔐', name: 'Privacy Coins', desc: 'Ring signatures, stealth addresses, ZK-proofs, dan arsitektur anonimitas keuangan digital.', count: '3 artikel' },
+        { icon: '⚡', name: 'DeFi', desc: 'AMM, lending protocols, yield farming, dan mekanika pertukaran terdesentralisasi.', count: '4 artikel' },
+        { icon: '₿', name: 'Bitcoin', desc: 'Lightning Network, halving cycles, on-chain analytics, dan desain ekonomi Bitcoin.', count: '2 artikel' },
+        { icon: 'Ξ', name: 'Ethereum', desc: 'Layer 2 rollups, EIP-4844, Ethereum scalability roadmap, dan ekosistem dApps.', count: '2 artikel' },
+        { icon: '🌐', name: 'Web3', desc: 'DAOs, governance tokenomics, NFT utility, dan masa depan infrastruktur internet.', count: '2 artikel' },
+        { icon: '🔗', name: 'Blockchain', desc: 'Consensus mechanisms, cross-chain bridges, dan arsitektur protokol blockchain.', count: '3 artikel' },
+      ].map(t => `
+        <div class="topic-card reveal">
+          <span class="topic-count">${t.count}</span>
+          <span class="topic-icon">${t.icon}</span>
+          <div class="topic-name">${t.name}</div>
+          <div class="topic-desc">${t.desc}</div>
+        </div>
+      `).join('')}
+    </div>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- ── ARTICLES ── -->
+  <section id="articles">
+    <div class="section-label">Artikel Terbaru <span>// 03</span></div>
+    <div class="articles-list reveal">
+      <a href="https://trade-saja-38k804de2-arvinfarrelps-projects.vercel.app/blog/monero-privacy" target="_blank" class="article-row">
+        <span class="article-num">01</span>
+        <span class="article-cat">Privacy</span>
+        <span class="article-title">Why Privacy Matters in Cryptocurrency: Understanding Monero</span>
+        <span class="article-meta">Jan 15, 2025 · 8 min</span>
+        <span class="article-arrow">→</span>
+      </a>
+      <a href="https://trade-saja-38k804de2-arvinfarrelps-projects.vercel.app/blog/rise-of-defi" target="_blank" class="article-row">
+        <span class="article-num">02</span>
+        <span class="article-cat">DeFi</span>
+        <span class="article-title">The Rise of DeFi: How Decentralized Finance is Rewriting the Rules</span>
+        <span class="article-meta">Feb 3, 2025 · 6 min</span>
+        <span class="article-arrow">→</span>
+      </a>
+      <a href="https://trade-saja-38k804de2-arvinfarrelps-projects.vercel.app/blog/layer2-scaling" target="_blank" class="article-row">
+        <span class="article-num">03</span>
+        <span class="article-cat">Blockchain</span>
+        <span class="article-title">Layer 2 Solutions Explained: Scaling Ethereum for the Masses</span>
+        <span class="article-meta">Feb 18, 2025 · 7 min</span>
+        <span class="article-arrow">→</span>
+      </a>
+      <a href="https://trade-saja-38k804de2-arvinfarrelps-projects.vercel.app/blog/bitcoin-halving-2024" target="_blank" class="article-row">
+        <span class="article-num">04</span>
+        <span class="article-cat">Bitcoin</span>
+        <span class="article-title">Bitcoin Halving 2024: What On-Chain Data Says About Price Cycles</span>
+        <span class="article-meta">Mar 10, 2025 · 9 min</span>
+        <span class="article-arrow">→</span>
+      </a>
+      <a href="https://trade-saja-38k804de2-arvinfarrelps-projects.vercel.app/blog" target="_blank" class="article-row" style="justify-content:center; color:var(--blue); font-family:var(--mono); font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em;">
+        Lihat Semua Artikel →
+      </a>
+    </div>
+  </section>
+
+  <!-- ── BIG CTA ── -->
+  <div class="cta-section">
+    <div class="cta-box">
+      <div class="corner corner-tl"></div>
+      <div class="corner corner-tr"></div>
+      <div class="corner corner-bl"></div>
+      <div class="corner corner-br"></div>
+
+      <div class="cta-label">Mulai Belajar Sekarang</div>
+      <h2 class="cta-heading">Siap mendalami<br>dunia kripto?</h2>
+      <p class="cta-sub">
+        Kunjungi blog Trade Saja — riset mendalam, tanpa hype,
+        tanpa iklan. Gratis sepenuhnya.
+      </p>
+
+      <a href="https://trade-saja-38k804de2-arvinfarrelps-projects.vercel.app/"
+         target="_blank" rel="noopener"
+         class="btn-main" style="display:inline-flex;">
+        Buka Trade Saja
+        <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+
+      <div>
+        <div class="url-chip">
+          🔗 trade-saja-38k804de2-arvinfarrelps-projects.vercel.app
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <a href="https://trade-saja-38k804de2-arvinfarrelps-projects.vercel.app/" class="logo">
+      <span class="nav-dot" style="width:6px;height:6px;"></span>
+      Trade Saja
+    </a>
+    <div class="footer-links">
+      <a href="https://trade-saja-38k804de2-arvinfarrelps-projects.vercel.app/blog" target="_blank">Blog</a>
+      <a href="https://trade-saja-38k804de2-arvinfarrelps-projects.vercel.app/about" target="_blank">About</a>
+    </div>
+    <p class="footer-copy">© 2025 Arvin Farrel Pramuditya</p>
+  </footer>
+
+</div><!-- /.page -->
+
+<script>
+// ── CANVAS ANIMATED GRID ──
+(function() {
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, nodes = [], animId;
+  const COLS = 18, ROWS = 12, NODE_COUNT = 60;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function initNodes() {
+    nodes = [];
+    for (let i = 0; i < NODE_COUNT; i++) {
+      nodes.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        r: Math.random() * 1.5 + 0.5,
+        opacity: Math.random() * 0.5 + 0.2,
+      });
+    }
+  }
+
+  function drawGrid() {
+    const cw = W / COLS, ch = H / ROWS;
+    ctx.strokeStyle = 'rgba(59,130,246,0.04)';
+    ctx.lineWidth = 1;
+    for (let x = 0; x <= W; x += cw) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+    }
+    for (let y = 0; y <= H; y += ch) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+    }
+  }
+
+  function drawNodes() {
+    nodes.forEach(n => {
+      // Move
+      n.x += n.vx; n.y += n.vy;
+      if (n.x < 0 || n.x > W) n.vx *= -1;
+      if (n.y < 0 || n.y > H) n.vy *= -1;
+
+      // Draw node
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(59,130,246,${n.opacity})`;
+      ctx.fill();
+    });
+  }
+
+  function drawConnections() {
+    const MAX_DIST = 140;
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const dx = nodes[i].x - nodes[j].x;
+        const dy = nodes[i].y - nodes[j].y;
+        const d  = Math.sqrt(dx*dx + dy*dy);
+        if (d < MAX_DIST) {
+          const alpha = (1 - d / MAX_DIST) * 0.18;
+          ctx.beginPath();
+          ctx.moveTo(nodes[i].x, nodes[i].y);
+          ctx.lineTo(nodes[j].x, nodes[j].y);
+          ctx.strokeStyle = `rgba(59,130,246,${alpha})`;
+          ctx.lineWidth = 0.75;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function frame() {
+    ctx.clearRect(0, 0, W, H);
+    drawGrid();
+    drawConnections();
+    drawNodes();
+    animId = requestAnimationFrame(frame);
+  }
+
+  resize();
+  initNodes();
+  frame();
+
+  window.addEventListener('resize', () => {
+    cancelAnimationFrame(animId);
+    resize();
+    initNodes();
+    frame();
+  });
+})();
+
+// ── SCROLL REVEAL ──
+(function() {
+  const els = document.querySelectorAll('.reveal');
+  const io  = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 60);
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  els.forEach(el => io.observe(el));
+})();
+
+// ── NAVBAR SCROLL ──
+window.addEventListener('scroll', () => {
+  document.querySelector('nav').style.background =
+    window.scrollY > 40 ? 'rgba(7,8,10,0.95)' : 'rgba(7,8,10,0.75)';
+}, { passive: true });
+
+// ── TOPICS grid — inject HTML dynamically (already in template) ──
+</script>
+</body>
+</html>
